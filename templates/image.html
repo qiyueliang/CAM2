@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends "filterHeader.html" %}
+{% load staticfiles %}<!-- Loading Static files, for example: photos-->
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+<html lang = "en"/>
+<html>
+	<body>
+		{% block content %}
+		<div><img src="/static/images/{{camera.caseID}}/{{camera.id}}.jpg" style="max-width:75%; height:auto;" alt="image" class="img-responsive center-block"></div>
+		<div style="text-align:center;"><a href="http://127.0.0.1:8000/static/images/{{camera.caseID}}/{{camera.id}}.jpg" download="{{camera.id}}.jpg">Download</a></div>
+			<table style="width:100%; text-align:center; margin-top:1cm;">
+				<tr>
+					<th style="text-align:center;">Case ID</th>
+					<th style="text-align:center;">{{camera.caseID}}</th>
+				</tr>
+				<tr>
+					<td>Latitude</td>
+					<td>{{camera.latitude}}</td>
+				</tr>
+				<tr>
+					<td>Longitude</td>
+					<td>{{camera.longitude}}</td>
+				</tr>
+				<tr>
+					<td>Priority Index</td>
+					<td>{{camera.priorityIndex}}</td>
+				</tr>
+				<tr>
+					<td>Number of Floors</td>
+					<td>{{camera.numFloors}}</td>
+				</tr>
+				<tr>
+					<td>Floor Area (Meters Squared)</td>
+					<td>{{camera.floorArea_m2}}</td>
+				</tr>
+				<tr>
+					<td>Total Floor Area (Meters Squared)</td>
+					<td>{{camera.totalFloorArea_m2}}</td>
+				</tr>
+				<tr>
+					<td>Last Modified By</td>
+					<td>{{camera.lastModifiedUser}}</td>
+				</tr>
+				<tr>
+					<td>Last Modified On</td>
+					<td>{{camera.lastModifiedDate}}</td>
+				</tr>
+			</table>
+		{% endblock %}
+	</body>
+</html>
+

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% extends "filterHeader.html" %}
+{% load staticfiles %}<!-- Loading Static files, for example: photos-->
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+<html lang = "en"/>
+<html>
+	<body>
+		{% block content %}
+{{keyword}}
+			<form method="POST">
+			{% csrf_token %}
+			caseID
+			<input type ="text" name = "caseID" size = 5>
+			<input type="submit" name="search" value="Search"/>
+			&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+			Last Modified User
+			<input type ="text" name = "lastModifiedUser" size = 5>
+			<input type="submit" name="search1" value="Search"/>
+			{% csrf_token %}
+			</form>
+			<script type="text/javascript">
+			function deleteAlbum(id) {
+				if(confirm("Are you sure you want to delete this album?") == true) {
+					var str1 = "/filter/";
+					var str2 = String(id);
+					var str3 = "/deleteAlbum";
+					window.location.href = str1.concat(str2,str3);
+				}
+			}
+			function showUploadButton(){
+				var uploadElement = document.getElementById('uploadButton');
+				if(uploadElement.style.display === 'none') {
+					uploadElement.style.display = 'block';
+				} else {
+					uploadElement.style.display = 'none';
+				}
+				var uploadButton = document.getElementById('uploadCSVButton');
+				if(uploadButton.value=="Upload CSV") {
+					uploadButton.value="Cancel CSV Upload";
+				} else {
+					uploadButton.value="Upload CSV";
+				}
+			}
+			</script>
+			<form method="POST">
+			{% csrf_token %}
+
+			<div id="filterDropdowns">
+				<label>Filter 1</label> 						
+				<select name = 'filter1'>
+					{% block filter1dropdown %}
+						{% for columnHeader in columnHeaders %}
+							<option>{{ columnHeader }}</option>
+						{% empty %}
+							<option>There are no categories</option>
+						{% endfor %}
+					{% endblock %}
+				</select> 			
+				Min:
+				<input type = "text" name = "min1" size = 5 value ='-90'>
+				Max:
+				<input type = "text" name = "max1" size = 5 value = '90'>
+				<label>Filter 2</label> 						
+				<select name = 'filter2'>
+					{% block filter2dropdown %}
+						{% for columnHeader in columnHeaders %}
+							<option>{{ columnHeader }}</option>
+						{% empty %}
+							<option>There are no categories</option>
+						{% endfor %}
+					{% endblock %}	
+				</select>
+				Min:
+				<input type = "text" name = "min2" size = 5 value ='-90'>
+				Max:
+				<input type = "text" name = "max2" size = 5 value = '90'>
+				<label>Filter 3</label>	
+				<select name = 'filter3'>
+					{% block filter3dropdown %}
+						{% for columnHeader in columnHeaders %}
+							<option>{{ columnHeader }}</option>
+						{% empty %}
+							<option>There are no categories</option>
+						{% endfor %}
+					{% endblock %}	
+				</select> 	
+				Min:
+				<input type = "text" name = "min3" size = 5 value ='-90'>
+				Max:
+				<input type = "text" name = "max3" size = 5 value = '90'>
+			</div>
+			
+			<div style="text-align:center; margin-top:0.6cm; margin-bottom:0.6cm;">
+			<input type = "submit" name = "filter" value ="Filter">
+			</div>			
+			{% csrf_token %}
+			</form>
+
+     			<a href="/filter/new"><span class="glyphicon glyphicon-plus"></span> Add New Image </a> 
+			<input onclick="showUploadButton()" type="button" value="Upload CSV" id="uploadCSVButton"/>
+			<input type="submit" id="submit_all" value="Edit Multiple Images"/>
+			<div style="display:none;" id="uploadButton"><form method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{CSVform.as_ul}} <input type='submit' value='Upload' name='Upload'/>
+				
+			</form></div>
+			
+			
+			
+			<script src="http://code.jquery.com/jquery-1.4.4.min.js" type="text/javascript"></script>    <script type="text/javascript">
+        			$(function() {
+           				$("#checkAll").click(function() {
+                			$('input[class="subBox"]').attr("checked",this.checked); 
+     				       });
+           			 var $subBox = $("input[class='subBox']");
+            			$subBox.click(function(){
+               				 $("#checkAll").attr("checked",$subBox.length == $("input[name='subBox']:checked").length ? true : false);
+            					});
+       				 	});
+			</script>
+			<script>
+				$(document).ready(function(){
+					var $submit = $("#submit_all").hide(),
+					    $cbs = $('input[name="checkboxs"]').click(function(){
+						$submit.toggle( $cbs.is(":checked"));
+					});
+				});
+			</script>
+			{% for image in querysets %}
+				<h5><a><span onclick="deleteAlbum({{image.id}})"><span class="glyphicon glyphicon-trash"></span></span></a>
+				&nbsp&nbsp&nbsp<a href="/filter/{{image.id}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>
+				&nbsp<a href="/filter/{{image.caseID}}"> {{ image.caseID }} </a>
+				<li> <input type="checkbox" name="checkboxs" id="{{image.id}}" value="{{image.id}}" class="subBox"/> 
+				<label for="{{image.id}}"> <img src="/static/images/{{image.caseID}}/{{image.id}}.jpg"  width=100 height=100> </label> </li></h5>
+			{% empty %}
+				<h5>Sorry, no images match your criteria.</h5>
+			{% endfor %}
+		{% endblock %}
+	</body>
+</html>
+
